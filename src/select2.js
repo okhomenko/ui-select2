@@ -106,7 +106,7 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                 elm.select2(
                   'data', convertToSelect2Model(viewValue));
                 if (opts.sortable) {
-                  elm.select2("container").find("ul.select2-choices").sortable({
+                  var sortableOpts = {
                     containment: 'parent',
                     start: function () {
                       elm.select2("onSortStart");
@@ -115,8 +115,14 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                       elm.select2("onSortEnd");
                       elm.trigger('change');
                     }
-                  });
-                }                  
+                  };
+
+                  if (Object.prototype.toString.call(opts.sortable) === "[object Object]") {
+                    angular.extend(sortableOpts, opts.sortable);
+                  }
+
+                  elm.select2("container").find("ul.select2-choices").sortable(sortableOpts);
+                }
               } else {
                 if (angular.isObject(controller.$viewValue)) {
                   elm.select2('data', controller.$viewValue);
